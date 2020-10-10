@@ -1,0 +1,5 @@
+coreapi
+django-filter
+djangorestframework
+django-simple-captcha
+demjson
