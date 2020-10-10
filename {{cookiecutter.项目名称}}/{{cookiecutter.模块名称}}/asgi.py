@@ -1,5 +1,5 @@
 """
-ASGI config for TyadminDemo project.
+ASGI config for {{cookiecutter.模块名称}} project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'TyadminDemo.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', '{{cookiecutter.模块名称}}.settings')
 
 application = get_asgi_application()
