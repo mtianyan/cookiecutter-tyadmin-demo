@@ -36,9 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'user',
-    'crispy_forms',
     'rest_framework',
-    'django_filters',
     'tyadmin_api_cli',
     # 'captcha',
     # 'tyadmin_api'
