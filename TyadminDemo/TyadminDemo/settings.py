@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -36,7 +36,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'user',
-    # 'tyadmin_api_cli',
+    'crispy_forms',
+    'rest_framework',
+    'django_filters',
+    'tyadmin_api_cli',
     # 'captcha',
     # 'tyadmin_api'
 ]
@@ -77,7 +80,7 @@ WSGI_APPLICATION = 'TyadminDemo.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME':  os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
