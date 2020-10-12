@@ -1,4 +1,0 @@
-{
-  "项目名称": "TyAdminDemo",
-  "模块名称": "{{ cookiecutter.项目名称.lower()|replace(' ', '_')|replace('-', '_')|replace('.', '_')|trim() }}"
-}
