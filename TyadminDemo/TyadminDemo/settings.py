@@ -36,10 +36,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'user',
+    'django_filters',
     'rest_framework',
     'tyadmin_api_cli',
-    # 'captcha',
-    # 'tyadmin_api'
+    'simple_history',
+    'captcha',
+    'tyadmin_api'
 ]
 AUTH_USER_MODEL = "user.UserInfo"
 MIDDLEWARE = [
@@ -57,7 +59,7 @@ ROOT_URLCONF = 'TyadminDemo.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

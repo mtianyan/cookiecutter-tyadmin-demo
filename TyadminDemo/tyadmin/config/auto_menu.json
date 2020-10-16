@@ -1,0 +1,69 @@
+
+                [
+          {
+            name: '首页',
+            path: '/xadmin/index',
+            icon: 'dashboard',
+            component: './TyAdminBuiltIn/DashBoard'
+          },
+            {
+                      name: 'ty admin menu config',
+                      icon: 'smile',
+                      path: '/xadmin/ty_admin_menu_config',
+                      component: './AutoGenPage/TyAdminMenuConfigList',
+                   },{
+                      name: '模型配置',
+                      icon: 'smile',
+                      path: '/xadmin/ty_admin_model_config',
+                      component: './AutoGenPage/TyAdminModelConfigList',
+                   },{
+                      name: '字段配置',
+                      icon: 'smile',
+                      path: '/xadmin/ty_admin_model_field',
+                      component: './AutoGenPage/TyAdminModelFieldList',
+                   },{
+                      name: '办公区',
+                      icon: 'smile',
+                      path: '/xadmin/bgq_info',
+                      component: './AutoGenPage/BgqInfoList',
+                   },{
+                      name: '自动发现',
+                      icon: 'smile',
+                      path: '/xadmin/auto_discovery',
+                      component: './AutoGenPage/AutoDiscoveryList',
+                   },{
+                      name: 'historical 设备资产',
+                      icon: 'smile',
+                      path: '/xadmin/historical_network_device',
+                      component: './AutoGenPage/HistoricalNetworkDeviceList',
+                   },{
+                      name: '设备资产',
+                      icon: 'smile',
+                      path: '/xadmin/network_device',
+                      component: './AutoGenPage/NetworkDeviceList',
+                   },{
+                      name: '用户信息',
+                      icon: 'smile',
+                      path: '/xadmin/user_info',
+                      component: './AutoGenPage/UserInfoList',
+                   }
+   ,{
+    name: 'Tyadmin内置',
+    icon: 'VideoCamera',
+    path: '/xadmin/sys',
+    routes: [
+      {
+        name: 'TyAdmin日志',
+        icon: 'smile',
+        path: '/xadmin/sys/ty_admin_sys_log',
+        component: './TyAdminBuiltIn/TyAdminSysLogList'
+      },
+      {
+        name: 'TyAdmin验证',
+        icon: 'smile',
+        path: '/xadmin/sys/ty_admin_email_verify_record',
+        component: './TyAdminBuiltIn/TyAdminEmailVerifyRecordList'
+      }
+    ]
+  }]
+        

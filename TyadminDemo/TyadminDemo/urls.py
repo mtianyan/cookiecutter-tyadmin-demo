@@ -17,5 +17,5 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    # path('api/xadmin/v1/', include('tyadmin_api.urls')),
+    path('api/xadmin/v1/', include('tyadmin_api.urls')),
 ]
