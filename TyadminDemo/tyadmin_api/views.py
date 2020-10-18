@@ -21,6 +21,11 @@ class TyAdminEmailVerifyRecordViewSet(XadminViewSet):
     filter_class = TyAdminEmailVerifyRecordFilter
     search_fields = ["code", "email", "send_type"]
 
+class MenuConfigViewSet(XadminViewSet):
+    serializer_class = TyAdminEmailVerifyRecordSerializer
+    queryset = TyAdminEmailVerifyRecord.objects.all()
+    filter_class = TyAdminEmailVerifyRecordFilter
+    search_fields = ["code", "email", "send_type"]
 
 import datetime
 import json

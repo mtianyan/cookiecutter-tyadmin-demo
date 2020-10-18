@@ -38,7 +38,7 @@ const CopyableIcon: React.SFC<CopyableIconProps> = (props) => {
             setCurrentIcon(name);
             closeIcon()
         }}>
-            <Col xs={12} sm={12} md={12} lg={12} className={className} style={{paddingTop: 1}}>
+            <Col xs={12} sm={12} md={12} lg={6} className={className} style={{paddingTop: 1}}>
                 {React.createElement(allIcons[name])}
                 <Ellipsis length={22} lines={1} style={{ display: 'inline-block',verticalAlign:'middle',fontSize:8, paddingLeft:3, width: "auto"}}>{name}</Ellipsis>
             </Col>

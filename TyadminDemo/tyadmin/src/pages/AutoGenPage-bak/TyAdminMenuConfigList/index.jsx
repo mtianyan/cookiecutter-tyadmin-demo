@@ -1,17 +1,21 @@
 import {DownOutlined, PlusOutlined, EditOutlined,DeleteOutlined} from '@ant-design/icons';
-import {Button, Divider, Dropdown, Input, Menu, message, Popconfirm, Select, Switch, Tag, Space} from 'antd';
+import {Button, Divider, Dropdown, Input, Menu, message, Popconfirm, Select, Switch, Tag, Space, Col, Row, Card} from 'antd';
 import React, {useEffect,useRef, useState} from 'react';
 import {PageHeaderWrapper} from '@ant-design/pro-layout';
 import ProTable from 'mtianyan-pro-table';
 import CreateForm from './components/CreateForm';
-import {addTyAdminModelConfig, queryTyAdminModelConfig, removeTyAdminModelConfig, updateTyAdminModelConfig} from './service';
+import {addTyAdminMenuConfig, queryTyAdminMenuConfig, removeTyAdminMenuConfig, updateTyAdminMenuConfig} from './service';
 import UpdateForm from './components/UpdateForm';
 import UploadAvatar from '@/components/UploadAvatar';
+import MenuDragSortTree from '@/components/MenuDragSortTree';
+import EditTable from '@/components/EditTable';
 
 import moment from 'moment';
 const {Option} = Select;
 import {BooleanDisplay, dealDateTimeDisplay, dealTime, deepCopy, getObjectClass, getTableColumns, richForm, richTrans, richCol,fileUpload} from '@/utils/utils';
 import 'braft-editor/dist/index.css'
+import EditableTable from '@/components/EditTable';
+import IconDisplay from '@/components/IconDisplay';
 
 const TableList = () => {
   const [createModalVisible, handleModalVisible] = useState(false);
@@ -25,7 +29,7 @@ const TableList = () => {
   const hide = message.loading('正在添加');
 
   try {
-    await addTyAdminModelConfig({...fields});
+    await addTyAdminMenuConfig({...fields});
     hide();
     message.success('添加成功');
     return true;
@@ -53,7 +57,7 @@ const TableList = () => {
   const hide = message.loading('正在修改');
 
   try {
-    await updateTyAdminModelConfig(value, current_id);
+    await updateTyAdminMenuConfig(value, current_id);
     hide();
     message.success('修改成功');
     return true;
@@ -83,7 +87,7 @@ const TableList = () => {
 
   try {
     const ids = selectedRows.map(row => row.id).join(',');
-    await removeTyAdminModelConfig(ids);
+    await removeTyAdminMenuConfig(ids);
     hide();
     message.success('删除成功');
     return true;
@@ -106,24 +110,57 @@ const TableList = () => {
                                     },
                                   ],
                                 },{
-                      title: '模型名称',
+                      title: '菜单名称',
                       dataIndex: 'name',
                       rules: [
                         {
                           required: true,
-                          message: '模型名称为必填项',
+                          message: '菜单名称为必填项',
                         },
                       ],
                     },{
-                      title: '模型备注',
-                      dataIndex: 'verbose_name',
+                      title: '菜单路径',
+                      dataIndex: 'path',
                       rules: [
                         {
                           required: true,
-                          message: '模型备注为必填项',
+                          message: '菜单路径为必填项',
                         },
                       ],
-                    },    {
+                    },{
+                      title: '菜单图标',
+                      dataIndex: 'icon',
+                      rules: [
+                        {
+                          required: true,
+                          message: '菜单图标为必填项',
+                        },
+                      ],
+                    },{
+                      title: '菜单对应组件',
+                      dataIndex: 'component',
+                      rules: [
+                        {
+                          required: true,
+                          message: '菜单对应组件为必填项',
+                        },
+                      ],
+                    },{
+                              title: '父级菜单',
+                              dataIndex: 'parent_menu',
+                              backendType: 'foreignKey',
+                                    renderFormItem: (item, {value, onChange}) => {
+            const children = parent_menuForeignKeyList.map((item) => {
+              return <Option key={item.id} value={item.id}>{item.name}</Option>;
+            });
+            return <Select
+              placeholder="请选择父级菜单"
+              onChange={onChange}
+            >
+              {children}
+            </Select>;
+          },
+                            },    {
                               title: '操作',
                               dataIndex: 'option',
                               valueType: 'option',
@@ -131,15 +168,15 @@ const TableList = () => {
           width: 100,
                               render: (text, record) => (
                                 <>
-    
+
                                   <EditOutlined title="编辑" className="icon" onClick={async () => {
-                                    
+
                                     handleUpdateModalVisible(true);
                                     setUpdateFormValues(record);
                                   }} />
                                   <Divider type="vertical" />
                                   <Popconfirm
-                                    title="您确定要删除模型配置吗？"
+                                    title="您确定要删除ty admin menu config吗？"
                                     placement="topRight"
                                     onConfirm={() => {
                                       handleRemove([record])
@@ -165,74 +202,38 @@ const TableList = () => {
 
   const [paramState, setParamState] = useState({});
 
-  
+  const [parent_menuForeignKeyList, setParent_menuForeignKeyList] = useState([]);
+      useEffect(() => {
+        queryTyAdminMenuConfig().then(value => {
+          setParent_menuForeignKeyList(value.data);
+        });
+      }, []);
 
 
-    
+
   return (
     <PageHeaderWrapper>
-      <ProTable
-           beforeSearchSubmit={(params => {
-                         dealTime(params, dateFieldList);
-          return params;
-        })}
-        params={paramState}
-        scroll={{x: '100%'}}
-        columnsStateMap={columnsStateMap}
-        onColumnsStateChange={(map) => setColumnsStateMap(map)}
-        headerTitle="模型配置表格"
-        actionRef={actionRef}
-        rowKey="id"
-        toolBarRender={(action, {selectedRows}) => [
-          <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建
-          </Button>,
-          <Input.Search style={{marginRight: 20}} placeholder="搜索模型配置 " onSearch={value => {
-            setParamState({
-              search: value,
-            });
-            actionRef.current.reload();
-          }} />,
-          selectedRows && selectedRows.length > 0 && (
-            <Dropdown
-              overlay={
-                <Menu
-                  onClick={async e => {
-                    if (e.key === 'remove') {
-                      await handleRemove(selectedRows);
-                      actionRef.current.reloadAndRest();
-                    }
-                  }}
-                  selectedKeys={[]}
-                >
-                  <Menu.Item key="remove">批量删除</Menu.Item>
-                </Menu>
-              }
-            >
-              <Button>
-                批量操作 <DownOutlined />
-              </Button>
-            </Dropdown>
-          ),
-        ]}
-        tableAlertRender={({selectedRowKeys, selectedRows}) => (
-          selectedRowKeys.length > 0 ? <div>
-            已选择{' '}
-            <a
-              style={{
-                fontWeight: 600,
-              }}
-            >
-              {selectedRowKeys.length}
-            </a>{' '}
-            项&nbsp;&nbsp;
-          </div> : false
+        <Row>
+            <Col span={6} style={{paddingRight: 10}}>
+                 <Card
+                      title="菜单拖拽排序"
+                      style={{
+                          height: '100%',
+                      }}
+                      bodyStyle={{
+                          padding: 0,
+                      }}
+                      extra={        <Button type={'primary'}>保存排序</Button>}
+                    >
+                        <MenuDragSortTree />
+                 </Card>
+            </Col>
+            <Col span={18}>
+              <EditableTable/>
+            </Col>
+        </Row>
 
-        )}
-        request={(params, sorter, filter) => queryTyAdminModelConfig({...params, sorter, filter})}
-        columns={table_columns}
-        rowSelection={{}}
-      />
+
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
         <ProTable
                      formRef={addFormRef}
@@ -250,7 +251,7 @@ const TableList = () => {
           }}
           rowKey="key"
           type="form"
-          
+
           form={
             {
               labelCol: {span: 6},
@@ -276,7 +277,7 @@ const TableList = () => {
             }
           }}
           rowKey="key"
-          
+
           type="form"
           form={{
             initialValues: updateFormValues, labelCol: {span: 6},

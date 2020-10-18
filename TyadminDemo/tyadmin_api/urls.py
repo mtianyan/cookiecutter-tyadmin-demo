@@ -8,6 +8,7 @@ router = DefaultRouter(trailing_slash=False)
 router.register('ty_admin_sys_log/?', TyAdminSysLogViewSet)
 
 router.register('ty_admin_email_verify_record/?', TyAdminEmailVerifyRecordViewSet)
+router.register('menu/config/?', TyAdminEmailVerifyRecordViewSet)
 urlpatterns = [
     re_path('^', include(router.urls)),
     path('login/account', LoginView.as_view(), name='user_login'),
@@ -18,6 +19,7 @@ urlpatterns = [
     path('captcha', include('captcha.urls')),
     path('upload', UploadView.as_view(), name="rich_upload"),
     path('sys/menu', MenuView.as_view(), name="rich_upload"),
+    # path('menu/config', MenuView.as_view(), name="rich_upload"),
     path('dashboard', DashBoardView.as_view(), name="rich_upload"),
-    path('', include('tyadmin_api.auto_url'))
+    # path('', include('tyadmin_api.auto_url'))
 ]

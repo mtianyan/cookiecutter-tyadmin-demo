@@ -37,7 +37,7 @@ class IconDisplay extends React.Component<IconDisplayProps, IconDisplayState> {
     state: IconDisplayState = {
         theme: ThemeType.Outlined,
         searchKey: '',
-        showSelect: false,
+        showSelect: true,
         currentIcon: 'StepBackwardOutlined',
     };
 
@@ -113,7 +113,6 @@ class IconDisplay extends React.Component<IconDisplayProps, IconDisplayState> {
             <>
                 <div>
                         <Input
-                            size="middle"
                             value={this.state.currentIcon} onClick={e => this.setState({
                             showSelect: !this.state.showSelect,
                             searchKey: '',
@@ -121,13 +120,13 @@ class IconDisplay extends React.Component<IconDisplayProps, IconDisplayState> {
                             React.createElement(
                                 AntdIcons[this.state.currentIcon],
                                 {
-                                    style:{ fontSize: '22px'}
+                                    style:{ fontSize: '20px'}
                                 }
                             )
                         }>
                         </Input>
 
-                    {this.state.showSelect ? <Card>
+                    {this.state.showSelect ? <Card style={{marginTop: 8}}>
                         <Row>
                             <Input.Search
                                 // value={this.state.currentIcon}

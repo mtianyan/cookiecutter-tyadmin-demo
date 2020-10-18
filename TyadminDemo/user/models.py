@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -8,15 +10,119 @@ from django.db import models
 from simple_history.models import HistoricalRecords
 
 
-class TyAdminMenuConfig(models.Model):
-    name = models.CharField(max_length=500, verbose_name="菜单名称", default="")
-    path = models.CharField(max_length=500, verbose_name="菜单路径", default="")
+class TyAdminSysRole(models.Model):
+    role_name = models.CharField(max_length=128, verbose_name="角色名称")
+    role_key = models.CharField(max_length=128, verbose_name="权限字符")
+    role_sort = models.IntegerField(blank=True, null=True, verbose_name="角色顺序")
+    status = models.BooleanField(default=True, verbose_name="状态")
+    create_by = models.CharField(max_length=128, blank=True, null=True)
+    update_by = models.CharField(max_length=128, blank=True, null=True)
+    remark = models.CharField(max_length=255, blank=True, null=True, verbose_name="备注")
+    data_scope = models.CharField(max_length=128, blank=True, null=True, verbose_name="权限范围")
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'sys_role'
+        ordering = ['pk']
+
+
+class TyAdminSysMenu(models.Model):
+    MENU_CHOICES = (
+        ("directory", "目录"),
+        ("menu", "菜单"),
+        ("button", "按钮"),
+        ("interface", "接口"),
+    )
+    parent_menu = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, verbose_name="上级菜单", help_text=f"{MAIN_DISPLAY}__name")
+    name = models.CharField(max_length=500, verbose_name="菜单标题", default="")
+    sort = models.IntegerField(verbose_name="显示排序")
+    menu_type = models.CharField(choices=MENU_CHOICES, max_length=30, blank=True, null=True)
     icon = models.CharField(max_length=500, verbose_name="菜单图标", default="")
-    component = models.CharField(max_length=500, verbose_name="菜单对应组件", default="")
-    parent_menu = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, verbose_name="父级菜单", help_text=f"{MAIN_DISPLAY}__name")
+    component = models.CharField(max_length=500, verbose_name="组件路径", default="")
+    path = models.CharField(max_length=500, verbose_name="路由地址", default="", unique=True)
+    visible = models.BooleanField(default=True, verbose_name="显示")
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
 
 
-class TyAdminModelConfig(models.Model):
+class TyAdminSysDept(models.Model):
+    parent_dept = models.ForeignKey("self", on_delete=models.CASCADE, verbose_name="上级部门", help_text=f"{MAIN_DISPLAY}__name")
+    dept_name = models.CharField(verbose_name="部门名称", max_length=128)
+    sort = models.IntegerField(verbose_name="显示排序")
+    leader = models.CharField(max_length=128, verbose_name="负责人", blank=True, null=True)
+    phone = models.CharField(max_length=11, verbose_name="联系电话", blank=True, null=True)
+    email = models.CharField(max_length=64, verbose_name="邮箱", blank=True, null=True)
+    status = models.BooleanField(default=True, verbose_name="部门状态")
+    create_by = models.CharField(max_length=500, blank=True, null=True)
+    update_by = models.CharField(max_length=500, blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now())
+    updated_at = models.DateTimeField(blank=True, null=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = '部门管理'
+        ordering = ['pk']
+
+
+class SysConfig(models.Model):
+    config_name = models.CharField(max_length=128, blank=True, null=True)
+    config_key = models.CharField(max_length=128, blank=True, null=True)
+    config_value = models.CharField(max_length=255, blank=True, null=True)
+    config_type = models.CharField(max_length=64, blank=True, null=True)
+    remark = models.CharField(max_length=128, blank=True, null=True)
+    create_by = models.CharField(max_length=128, blank=True, null=True)
+    update_by = models.CharField(max_length=128, blank=True, null=True)
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = ""
+
+
+class TyAdminSysPost(models.Model):
+    post_name = models.CharField(max_length=128, verbose_name="岗位名称")
+    post_code = models.CharField(max_length=128, verbose_name="岗位编码")
+    sort = models.IntegerField(default=0, verbose_name="岗位顺序")
+    status = models.BooleanField(default=True, verbose_name="岗位状态")
+    remark = models.CharField(max_length=255, blank=True, null=True, verbose_name="岗位备注")
+    create_by = models.CharField(max_length=128, blank=True, null=True)
+    update_by = models.CharField(max_length=128, blank=True, null=True)
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = '岗位管理'
+        ordering = ['pk']
+
+
+class TyAdminSysLoginLog(models.Model):
+    username = models.CharField(max_length=128, verbose_name="用户名称")
+    status = models.IntegerField(blank=True, null=True, verbose_name="登录状态")
+    ipaddr = models.CharField(max_length=255, blank=True, null=True, verbose_name="登录地址")
+    login_location = models.CharField(max_length=255, blank=True, verbose_name="登录地点")
+    browser = models.CharField(max_length=255, blank=True, null=True, verbose_name="浏览器")
+    os = models.CharField(max_length=255, blank=True, null=True, verbose_name="操作系统")
+    platform = models.CharField(max_length=255, blank=True, null=True, verbose_name="系统平台")
+    login_time = models.DateTimeField(blank=True, null=True, verbose_name="登录时间")
+    create_by = models.CharField(max_length=128, blank=True, null=True)
+    update_by = models.CharField(max_length=128, blank=True, null=True)
+    remark = models.CharField(max_length=255, blank=True, null=True, verbose_name="备注")
+    msg = models.CharField(max_length=255, blank=True, null=True, verbose_name="操作信息")
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = '登录日志'
+
+
+class TyAdminSysModel(models.Model):
     name = models.CharField(max_length=500, verbose_name="模型名称", default="")
     verbose_name = models.CharField(max_length=500, blank=True, null=True, verbose_name="模型备注")
 
@@ -24,8 +130,8 @@ class TyAdminModelConfig(models.Model):
         verbose_name = '模型配置'
 
 
-class TyAdminModelField(models.Model):
-    model_name = models.ForeignKey(TyAdminModelConfig, on_delete=models.CASCADE, verbose_name="所属模型", help_text=f'{MAIN_DISPLAY}__name', null=True,
+class TyAdminSysModelField(models.Model):
+    model_name = models.ForeignKey(TyAdminSysModel, on_delete=models.CASCADE, verbose_name="所属模型", help_text=f'{MAIN_DISPLAY}__name', null=True,
                                    blank=True)  # 外键
     name = models.CharField(max_length=500, verbose_name="字段名")
     desc = models.CharField(max_length=500, verbose_name="字段描述", default="")
@@ -109,10 +215,21 @@ class UserInfo(AbstractUser):
         ("male", "男"),
         ("female", "女")
     )
+    nick_name = models.CharField(max_length=128, blank=True, null=True, verbose_name="用户昵称")
+    department = models.ForeignKey(TyAdminSysDept, verbose_name="归属部门", null=True, blank=True, on_delete=models.SET_NULL,
+                                   help_text=f'{MAIN_DISPLAY}__name')
+    phone = models.CharField(max_length=11, blank=True, null=True, verbose_name="手机号")
     gender = models.CharField(max_length=6, choices=GENDER_CHOICES, default="female", verbose_name="性别")
+    status = models.BooleanField(default=True, verbose_name="状态")
+    post = models.ForeignKey(TyAdminSysPost, verbose_name="岗位", null=True, blank=True, on_delete=models.SET_NULL, help_text=f'{MAIN_DISPLAY}__name')
+    role = models.ForeignKey(TyAdminSysPost, verbose_name="角色", null=True, blank=True, on_delete=models.SET_NULL, help_text=f'{MAIN_DISPLAY}__name')
     birthday = models.DateField(null=True, blank=True, verbose_name="出生年月")
     image = models.ImageField(upload_to="image/%Y/%m", max_length=100, verbose_name="头像", help_text=MAIN_AVATAR)
+    remark = models.CharField(max_length=255, blank=True, null=True, verbose_name="备注")
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        verbose_name = "用户信息"
+        verbose_name = "用户管理"
         verbose_name_plural = verbose_name
